@@ -1,16 +1,12 @@
 {
-  "projectName": "start-app",
+  "projectName": "json-render-tanstack-start",
   "mode": "file-router",
   "typescript": true,
   "tailwind": true,
-  "packageManager": "pnpm",
+  "packageManager": "npm",
   "addOnOptions": {},
   "git": true,
   "version": 1,
   "framework": "react-cra",
-  "chosenAddOns": [
-    "eslint",
-    "nitro",
-    "start"
-  ]
+  "chosenAddOns": ["eslint", "nitro", "start"]
 }

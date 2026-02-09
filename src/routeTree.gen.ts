@@ -9,38 +9,100 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PingRouteImport } from './routes/ping'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiGenerateRouteImport } from './routes/api/generate'
+import { Route as ApiV1PostsRouteImport } from './routes/api/v1/posts'
+import { Route as ApiV1PostsIdStatusRouteImport } from './routes/api/v1/posts/$id/status'
 
+const PingRoute = PingRouteImport.update({
+  id: '/ping',
+  path: '/ping',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiGenerateRoute = ApiGenerateRouteImport.update({
+  id: '/api/generate',
+  path: '/api/generate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1PostsRoute = ApiV1PostsRouteImport.update({
+  id: '/api/v1/posts',
+  path: '/api/v1/posts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1PostsIdStatusRoute = ApiV1PostsIdStatusRouteImport.update({
+  id: '/$id/status',
+  path: '/$id/status',
+  getParentRoute: () => ApiV1PostsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ping': typeof PingRoute
+  '/api/generate': typeof ApiGenerateRoute
+  '/api/v1/posts': typeof ApiV1PostsRouteWithChildren
+  '/api/v1/posts/$id/status': typeof ApiV1PostsIdStatusRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ping': typeof PingRoute
+  '/api/generate': typeof ApiGenerateRoute
+  '/api/v1/posts': typeof ApiV1PostsRouteWithChildren
+  '/api/v1/posts/$id/status': typeof ApiV1PostsIdStatusRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ping': typeof PingRoute
+  '/api/generate': typeof ApiGenerateRoute
+  '/api/v1/posts': typeof ApiV1PostsRouteWithChildren
+  '/api/v1/posts/$id/status': typeof ApiV1PostsIdStatusRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/ping'
+    | '/api/generate'
+    | '/api/v1/posts'
+    | '/api/v1/posts/$id/status'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/ping'
+    | '/api/generate'
+    | '/api/v1/posts'
+    | '/api/v1/posts/$id/status'
+  id:
+    | '__root__'
+    | '/'
+    | '/ping'
+    | '/api/generate'
+    | '/api/v1/posts'
+    | '/api/v1/posts/$id/status'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PingRoute: typeof PingRoute
+  ApiGenerateRoute: typeof ApiGenerateRoute
+  ApiV1PostsRoute: typeof ApiV1PostsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/ping': {
+      id: '/ping'
+      path: '/ping'
+      fullPath: '/ping'
+      preLoaderRoute: typeof PingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +110,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/generate': {
+      id: '/api/generate'
+      path: '/api/generate'
+      fullPath: '/api/generate'
+      preLoaderRoute: typeof ApiGenerateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/posts': {
+      id: '/api/v1/posts'
+      path: '/api/v1/posts'
+      fullPath: '/api/v1/posts'
+      preLoaderRoute: typeof ApiV1PostsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/posts/$id/status': {
+      id: '/api/v1/posts/$id/status'
+      path: '/$id/status'
+      fullPath: '/api/v1/posts/$id/status'
+      preLoaderRoute: typeof ApiV1PostsIdStatusRouteImport
+      parentRoute: typeof ApiV1PostsRoute
+    }
   }
 }
 
+interface ApiV1PostsRouteChildren {
+  ApiV1PostsIdStatusRoute: typeof ApiV1PostsIdStatusRoute
+}
+
+const ApiV1PostsRouteChildren: ApiV1PostsRouteChildren = {
+  ApiV1PostsIdStatusRoute: ApiV1PostsIdStatusRoute,
+}
+
+const ApiV1PostsRouteWithChildren = ApiV1PostsRoute._addFileChildren(
+  ApiV1PostsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PingRoute: PingRoute,
+  ApiGenerateRoute: ApiGenerateRoute,
+  ApiV1PostsRoute: ApiV1PostsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
