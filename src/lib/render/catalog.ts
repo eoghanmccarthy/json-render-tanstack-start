@@ -1,4 +1,3 @@
-// src/lib/render/catalog.ts
 import { defineCatalog } from "@json-render/core";
 import { schema } from "@json-render/react";
 import { z } from "zod";
@@ -41,6 +40,16 @@ export const catalog = defineCatalog(schema, {
     },
 
     // Form Inputs
+    Form: {
+      props: z.object({
+        submitAction: z.string(),
+        submitActionParams: z.record(z.string(), z.unknown()).nullable(),
+      }),
+      slots: ["default"],
+      description:
+          "Form container that enables Enter key submission. Wrap form inputs (Input, Select, Checkbox, etc.) and a submit Button inside this component.",
+    },
+
     Input: {
       props: z.object({
         label: z.string().nullable().optional(),
@@ -77,15 +86,6 @@ export const catalog = defineCatalog(schema, {
         password: z.string(),
       }),
       description: "Create a post via POST /api/v1/posts",
-    },
-
-    "posts.updateStatus": {
-      params: z.object({
-        id: z.string(),
-        status: z.enum(["draft", "published"]),
-        password: z.string(),
-      }),
-      description: "Update a post status via PATCH /api/v1/posts/:id/status",
     },
   },
 });

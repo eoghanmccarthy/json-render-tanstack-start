@@ -1,3 +1,4 @@
+import { baseHeaders, forward } from "@/routes/api/-utils";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/api/v1/posts")({
@@ -31,19 +32,3 @@ export const Route = createFileRoute("/api/v1/posts")({
     },
   },
 });
-
-function baseHeaders(method: string): Record<string, string> {
-  const headers: Record<string, string> = {};
-  // Only add custom header for modifying methods; no Bearer tokens required
-  if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
-    const custom = process.env.BLOG_API_KEY;
-    if (custom) headers["X-Custom-Auth-Key"] = custom;
-  }
-  return headers;
-}
-
-async function forward(res: Response) {
-  const text = await res.text();
-  const contentType = res.headers.get("content-type") || "application/json";
-  return new Response(text, { status: res.status, headers: { "Content-Type": contentType } });
-}

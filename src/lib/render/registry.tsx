@@ -1,5 +1,5 @@
 import { catalog } from "./catalog";
-import { Button as UIButton } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,14 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input as UIInput } from "@/components/ui/input";
-import { Label as UILabel } from "@/components/ui/label";
-import { Textarea as UITextarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { findFormValue, getByPath } from "@json-render/core";
-// src/lib/render/registry.tsx
-import { defineRegistry, useData } from "@json-render/react";
+import { defineRegistry, useStateStore } from "@json-render/react";
 
-export const { registry, handlers } = defineRegistry(catalog, {
+export const { registry, handlers, executeAction } = defineRegistry(catalog, {
   components: {
     Card: ({ props, children }) => (
       <Card>
@@ -32,28 +31,37 @@ export const { registry, handlers } = defineRegistry(catalog, {
     Text: ({ props }) => (
       <p className={props.muted ? "text-muted-foreground" : ""}>{props.content}</p>
     ),
-    Button: ({ props, onAction, loading }) => (
-      <UIButton
+    Button: ({ props, emit, loading }) => (
+      <Button
         variant={props.variant ?? "default"}
         disabled={loading || (props.disabled ?? false)}
-        onClick={() =>
-          onAction?.({
-            name: props.action,
-            params: props.actionParams ?? undefined,
-          })
-        }
+        onClick={() => {
+          console.log("Button clicked:", props.action, props.actionParams, props.label, emit);
+          return emit?.("press");
+        }}
       >
         {loading ? "..." : props.label}
-      </UIButton>
+      </Button>
+    ),
+    Form: ({ children, emit }) => (
+        <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              emit?.("submit");
+            }}
+            className="flex flex-col gap-4"
+        >
+          {children}
+        </form>
     ),
     Input: ({ props }) => {
-      const { data, set } = useData();
-      const value = (getByPath(data, props.valuePath) as string) ?? "";
+      const { state, set } = useStateStore();
+      const value = (getByPath(state, props.valuePath) as string) ?? "";
+      // console.log("Rendering Input:", props, "with value:", value);
       return (
         <div className="flex flex-col gap-2">
-          {props.label ? <UILabel htmlFor={props.valuePath}>{props.label}</UILabel> : null}
-          <UIInput
-            id={props.valuePath}
+          {props.label ? <Label>{props.label}</Label> : null}
+          <Input
             type={props.type ?? "text"}
             value={value}
             placeholder={props.placeholder ?? ""}
@@ -65,13 +73,12 @@ export const { registry, handlers } = defineRegistry(catalog, {
       );
     },
     Textarea: ({ props }) => {
-      const { data, set } = useData();
-      const value = (getByPath(data, props.valuePath) as string) ?? "";
+      const { state, set } = useStateStore();
+      const value = (getByPath(state, props.valuePath) as string) ?? "";
       return (
         <div className="flex flex-col gap-2">
-          {props.label ? <UILabel htmlFor={props.valuePath}>{props.label}</UILabel> : null}
-          <UITextarea
-            id={props.valuePath}
+          {props.label ? <Label>{props.label}</Label> : null}
+          <Textarea
             value={value}
             placeholder={props.placeholder ?? ""}
             rows={props.rows ?? 4}
@@ -98,9 +105,11 @@ export const { registry, handlers } = defineRegistry(catalog, {
       }
     },
 
-    "posts.create": async (params, setData, data) => {
-      const content = (findFormValue("content", params, data) as string) ?? "";
-      const password = (findFormValue("password", params, data) as string) ?? "";
+    "posts.create": async (params, setState, state) => {
+      console.log("posts.create action called with params", params, "and data", state);
+      const content = (findFormValue("content", params, state) as string) ?? "";
+      const password = (findFormValue("password", params, state) as string) ?? "";
+
       if (!content || !password) {
         console.warn("Missing required fields for posts.create");
         return;
@@ -108,52 +117,19 @@ export const { registry, handlers } = defineRegistry(catalog, {
       try {
         const res = await fetch("/api/v1/posts", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          // headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: JSON.stringify({ content, password }),
         });
         const json = await res.json();
-        if (!res.ok) throw new Error(json?.error || "Failed to create post");
-        // Refresh list after create
-        try {
-          const listRes = await fetch("/api/v1/posts");
-          const posts = await listRes.json();
-          if (listRes.ok) {
-            setData((prev: any) => ({
-              ...prev,
-              posts,
-              form: { ...(prev?.form ?? {}), content: "", password: "" },
-            }));
-          }
-        } catch {}
+
+        if (res.ok) {
+          //
+        } else {
+          throw new Error(json?.error || "Failed to create post");
+        }
       } catch (err) {
         console.error("posts.create failed", err);
-      }
-    },
-
-    "posts.updateStatus": async (params, setData, data) => {
-      const id = String(findFormValue("id", params, data) ?? "");
-      const status = String(findFormValue("status", params, data) ?? "");
-      const password = String(findFormValue("password", params, data) ?? "");
-      if (!id || !status || !password) {
-        console.warn("Missing required fields for posts.updateStatus");
-        return;
-      }
-      try {
-        const res = await fetch(`/api/v1/posts/${id}/status`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status, password }),
-        });
-        const json = await res.json();
-        if (!res.ok) throw new Error(json?.error || "Failed to update post status");
-        // Refresh list after update
-        try {
-          const listRes = await fetch("/api/v1/posts");
-          const posts = await listRes.json();
-          if (listRes.ok) setData((prev: any) => ({ ...prev, posts }));
-        } catch {}
-      } catch (err) {
-        console.error("posts.updateStatus failed", err);
       }
     },
   },
