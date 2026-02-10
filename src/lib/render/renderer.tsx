@@ -47,9 +47,42 @@ export function DashboardRenderer({
     [],
   );
   // console.log("Action Handlers:", actionHandlers);
+  console.log("DashboardRenderer spec.state", spec?.state);
 
-  if (!spec) return null;
-  // console.log("Rendering Dashboard with spec:", spec, "state:", state);
+  // Auto-wire "on" bindings from action props so the LLM doesn't need to generate them
+  const resolvedSpec = useMemo(() => {
+    if (!spec) return null;
+    const elements = { ...spec.elements };
+    for (const [key, el] of Object.entries(elements)) {
+      if (el.on) continue;
+      const props = el.props;
+      if (el.type === "Button" && typeof props.action === "string") {
+        elements[key] = {
+          ...el,
+          on: {
+            press: {
+              action: props.action,
+              params: props.actionParams as Record<string, unknown> | undefined,
+            },
+          },
+        };
+      } else if (el.type === "Form" && typeof props.submitAction === "string") {
+        elements[key] = {
+          ...el,
+          on: {
+            submit: {
+              action: props.submitAction,
+              params: props.submitActionParams as Record<string, unknown> | undefined,
+            },
+          },
+        };
+      }
+    }
+    return { ...spec, elements };
+  }, [spec]);
+
+  if (!resolvedSpec) return null;
+  console.log("Rendering Dashboard with spec:", resolvedSpec);
 
   return (
     <div>
@@ -57,7 +90,12 @@ export function DashboardRenderer({
         <VisibilityProvider>
           <ValidationProvider>
             <ActionProvider handlers={actionHandlers}>
-              <Renderer spec={spec} registry={registry} fallback={fallback} loading={loading} />
+              <Renderer
+                spec={resolvedSpec}
+                registry={registry}
+                fallback={fallback}
+                loading={loading}
+              />
             </ActionProvider>
           </ValidationProvider>
         </VisibilityProvider>

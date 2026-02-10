@@ -19,10 +19,11 @@ export function Widget() {
   }, [state]);
 
   const handleStateChange = React.useCallback((path: string, value: unknown) => {
+    console.log("State change:", path, value);
     setState((prev) => {
       const next = { ...prev };
       // Convert path like "customerForm/name" to nested object
-      const parts = path.split("/");
+      const parts = path.split("/").filter(Boolean);
       let current: Record<string, unknown> = next;
       for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i]!;
@@ -33,9 +34,21 @@ export function Widget() {
       }
       const lastPart = parts[parts.length - 1]!;
       current[lastPart] = value;
+      console.log("Updated state:", next);
       return next;
     });
   }, []);
+
+  const handleGenerate = React.useCallback(
+      async (text?: string) => {
+        const p = text || prompt;
+        if (!p.trim()) return;
+        if (text) setPrompt(text);
+        await send(p, { state });
+        // onGenerated?.();
+      },
+      [prompt, send, state],
+  );
 
   return (
     <Card>
@@ -46,7 +59,8 @@ export function Widget() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            send(prompt);
+            // send(prompt);
+            handleGenerate()
           }}
           className="flex gap-2"
         >

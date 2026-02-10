@@ -16,6 +16,18 @@ import { defineRegistry, useStateStore } from "@json-render/react";
 
 export const { registry, handlers, executeAction } = defineRegistry(catalog, {
   components: {
+    Stack: ({ props, children }) => {
+      const gapClass =
+          { sm: "gap-2", md: "gap-4", lg: "gap-6" }[props.gap ?? "md"] ??
+          "gap-4";
+      return (
+          <div
+              className={`flex ${props.direction === "horizontal" ? "flex-row" : "flex-col"} ${gapClass}`}
+          >
+            {children}
+          </div>
+      );
+    },
     Card: ({ props, children }) => (
       <Card>
         {(props.title || props.description) && (
@@ -43,21 +55,10 @@ export const { registry, handlers, executeAction } = defineRegistry(catalog, {
         {loading ? "..." : props.label}
       </Button>
     ),
-    Form: ({ children, emit }) => (
-        <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              emit?.("submit");
-            }}
-            className="flex flex-col gap-4"
-        >
-          {children}
-        </form>
-    ),
     Input: ({ props }) => {
       const { state, set } = useStateStore();
       const value = (getByPath(state, props.valuePath) as string) ?? "";
-      // console.log("Rendering Input:", props, "with value:", value);
+      console.log("Rendering Input:", "props.valuePath", props.valuePath, "with value:", value);
       return (
         <div className="flex flex-col gap-2">
           {props.label ? <Label>{props.label}</Label> : null}
@@ -105,6 +106,11 @@ export const { registry, handlers, executeAction } = defineRegistry(catalog, {
       }
     },
 
+    "debug.alert": async (params) => {
+      const message = (params as Record<string, unknown>)?.message ?? "Button clicked!";
+      alert(String(message));
+    },
+
     "posts.create": async (params, setState, state) => {
       console.log("posts.create action called with params", params, "and data", state);
       const content = (findFormValue("content", params, state) as string) ?? "";
@@ -117,8 +123,7 @@ export const { registry, handlers, executeAction } = defineRegistry(catalog, {
       try {
         const res = await fetch("/api/v1/posts", {
           method: "POST",
-          // headers: { "Content-Type": "application/json" },
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ content, password }),
         });
         const json = await res.json();
