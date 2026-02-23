@@ -1,15 +1,11 @@
 import * as React from "react";
 
-import { DashboardRenderer, useDashboardUIStream } from "@/lib/render/renderer";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { DashboardRenderer, useDashboardUIStream } from "@/lib/render/renderer";
 
-
-const PROMPTS = [
-  "Create a widget with content and password fields for creating a new post.",
-];
+const PROMPTS = ["Create a widget with content and password fields for creating a new post."];
 
 export function Widget() {
   const [prompt, setPrompt] = React.useState(PROMPTS[0] ?? "");
@@ -44,14 +40,14 @@ export function Widget() {
   }, []);
 
   const handleGenerate = React.useCallback(
-      async (text?: string) => {
-        const p = text || prompt;
-        if (!p.trim()) return;
-        if (text) setPrompt(text);
-        await send(p, { state });
-        // onGenerated?.();
-      },
-      [prompt, send, state],
+    async (text?: string) => {
+      const p = text || prompt;
+      if (!p.trim()) return;
+      if (text) setPrompt(text);
+      await send(p, { state });
+      // onGenerated?.();
+    },
+    [prompt, send, state],
   );
 
   return (
@@ -64,7 +60,7 @@ export function Widget() {
           onSubmit={(e) => {
             e.preventDefault();
             // send(prompt);
-            handleGenerate()
+            handleGenerate();
           }}
           className="flex gap-2"
         >
@@ -74,7 +70,9 @@ export function Widget() {
             value={prompt}
             onChange={(e) => setPrompt(e.currentTarget.value)}
           />
-          <Button type="submit" disabled={isStreaming || !prompt.trim()}>Generate</Button>
+          <Button type="submit" disabled={isStreaming || !prompt.trim()}>
+            Generate
+          </Button>
           <Button type="button" variant="outline" onClick={() => clear()}>
             Clear
           </Button>

@@ -3,7 +3,6 @@ import { schema } from "@json-render/react/schema";
 import { shadcnComponentDefinitions } from "@json-render/shadcn/catalog";
 import { z } from "zod";
 
-
 export const catalog = defineCatalog(schema, {
   components: {
     Button: shadcnComponentDefinitions.Button,
@@ -11,7 +10,7 @@ export const catalog = defineCatalog(schema, {
     Grid: shadcnComponentDefinitions.Grid,
     Heading: shadcnComponentDefinitions.Heading,
     Input: shadcnComponentDefinitions.Input,
-    Text:shadcnComponentDefinitions.Text,
+    Text: shadcnComponentDefinitions.Text,
     Textarea: shadcnComponentDefinitions.Textarea,
     Toggle: shadcnComponentDefinitions.Toggle,
     Select: shadcnComponentDefinitions.Select,

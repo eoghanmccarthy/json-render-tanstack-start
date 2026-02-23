@@ -1,5 +1,6 @@
-import { Widget } from "@/components/widget.tsx";
 import { createFileRoute } from "@tanstack/react-router";
+
+import { Widget } from "@/components/widget.tsx";
 
 export const Route = createFileRoute("/")({ component: RouteComponent });
 

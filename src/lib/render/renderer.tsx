@@ -1,4 +1,5 @@
-import { useMemo, useRef } from "react";
+import type { ComponentRenderer, Spec } from "@json-render/react";
+
 import {
   ActionProvider,
   Renderer,
@@ -7,7 +8,7 @@ import {
   VisibilityProvider,
   useUIStream,
 } from "@json-render/react";
-import type { ComponentRenderer, Spec } from "@json-render/react";
+import { useMemo, useRef } from "react";
 
 import { Fallback, handlers as createHandlers, registry } from "./registry";
 
@@ -56,12 +57,7 @@ export function DashboardRenderer({
         <VisibilityProvider>
           <ValidationProvider>
             <ActionProvider handlers={actionHandlers}>
-              <Renderer
-                spec={spec}
-                registry={registry}
-                fallback={fallback}
-                loading={loading}
-              />
+              <Renderer spec={spec} registry={registry} fallback={fallback} loading={loading} />
             </ActionProvider>
           </ValidationProvider>
         </VisibilityProvider>

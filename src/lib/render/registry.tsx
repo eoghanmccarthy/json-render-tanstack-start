@@ -11,7 +11,7 @@ export const { registry, handlers, executeAction } = defineRegistry(catalog, {
     Grid: shadcnComponents.Grid,
     Heading: shadcnComponents.Heading,
     Input: shadcnComponents.Input,
-    Text:shadcnComponents.Text,
+    Text: shadcnComponents.Text,
     Textarea: shadcnComponents.Textarea,
     Toggle: shadcnComponents.Toggle,
     Select: shadcnComponents.Select,
@@ -21,7 +21,6 @@ export const { registry, handlers, executeAction } = defineRegistry(catalog, {
     Skeleton: shadcnComponents.Skeleton,
     Stack: shadcnComponents.Stack,
     Switch: shadcnComponents.Switch,
-
   },
   actions: {
     "posts.list": async (params, setData) => {

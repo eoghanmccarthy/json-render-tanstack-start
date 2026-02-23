@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { buildUserPrompt } from "@json-render/core";
+import { createFileRoute } from "@tanstack/react-router";
 import { streamText } from "ai";
 
 import { catalog } from "@/lib/render/catalog";
@@ -7,10 +7,7 @@ import { catalog } from "@/lib/render/catalog";
 export const maxDuration = 30;
 
 const SYSTEM_PROMPT = catalog.prompt({
-  customRules: [
-    "Use Card as root for forms and small UIs.",
-    "Use Grid for multi-column layouts.",
-  ],
+  customRules: ["Use Card as root for forms and small UIs.", "Use Grid for multi-column layouts."],
 });
 const DEFAULT_MODEL = "anthropic/claude-haiku-4.5";
 
