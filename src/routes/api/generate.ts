@@ -6,7 +6,12 @@ import { catalog } from "@/lib/render/catalog";
 
 export const maxDuration = 30;
 
-const SYSTEM_PROMPT = catalog.prompt();
+const SYSTEM_PROMPT = catalog.prompt({
+  customRules: [
+    "Use Card as root for forms and small UIs.",
+    "Use Grid for multi-column layouts.",
+  ],
+});
 const DEFAULT_MODEL = "anthropic/claude-haiku-4.5";
 
 export const Route = createFileRoute("/api/generate")({

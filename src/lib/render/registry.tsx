@@ -44,7 +44,6 @@ export const { registry, handlers, executeAction } = defineRegistry(catalog, {
     },
 
     "posts.create": async (params, setState, state) => {
-      console.log("posts.create action called with params", params, "and data", state);
       // const content = findFormValue("content", params, state) as string;
       // const password = findFormValue("password", params, state) as string;
 

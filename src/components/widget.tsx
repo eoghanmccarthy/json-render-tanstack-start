@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import { DashboardRenderer, useDashboardUIStream } from "@/lib/render/renderer";
 
 import { Button } from "@/components/ui/button";
@@ -15,8 +16,6 @@ export function Widget() {
   const [state, setState] = React.useState<Record<string, unknown>>({});
   const stateRef = React.useRef(state);
 
-  console.log("Widget state", state);
-
   const { spec, isStreaming, error, send, clear } = useDashboardUIStream();
 
   // Keep stateRef in sync
@@ -26,7 +25,6 @@ export function Widget() {
 
   const handleStateChange = React.useCallback((path: string, value: unknown) => {
     path = path.startsWith("/") ? path.slice(1) : path; // strip leading slash
-    console.log("State change", { path, value });
     setState((prev) => {
       const next = { ...prev };
       // Convert path like "customerForm/name" to nested object

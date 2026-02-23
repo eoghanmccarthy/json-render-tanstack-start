@@ -49,7 +49,6 @@ export function DashboardRenderer({
   );
 
   if (!spec) return null;
-  console.log("Rendering spec", spec, "with state", state);
 
   return (
     <div>
