@@ -8,97 +8,97 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as ApiGenerateRouteImport } from "./routes/api/generate";
-import { Route as ApiV1PostsRouteImport } from "./routes/api/v1/posts";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as PingRouteImport } from "./routes/ping";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as PingRouteImport } from './routes/ping'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiGenerateRouteImport } from './routes/api/generate'
+import { Route as ApiV1PostsRouteImport } from './routes/api/v1/posts'
 
 const PingRoute = PingRouteImport.update({
-  id: "/ping",
-  path: "/ping",
+  id: '/ping',
+  path: '/ping',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiGenerateRoute = ApiGenerateRouteImport.update({
-  id: "/api/generate",
-  path: "/api/generate",
+  id: '/api/generate',
+  path: '/api/generate',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiV1PostsRoute = ApiV1PostsRouteImport.update({
-  id: "/api/v1/posts",
-  path: "/api/v1/posts",
+  id: '/api/v1/posts',
+  path: '/api/v1/posts',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/ping": typeof PingRoute;
-  "/api/generate": typeof ApiGenerateRoute;
-  "/api/v1/posts": typeof ApiV1PostsRoute;
+  '/': typeof IndexRoute
+  '/ping': typeof PingRoute
+  '/api/generate': typeof ApiGenerateRoute
+  '/api/v1/posts': typeof ApiV1PostsRoute
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/ping": typeof PingRoute;
-  "/api/generate": typeof ApiGenerateRoute;
-  "/api/v1/posts": typeof ApiV1PostsRoute;
+  '/': typeof IndexRoute
+  '/ping': typeof PingRoute
+  '/api/generate': typeof ApiGenerateRoute
+  '/api/v1/posts': typeof ApiV1PostsRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  "/": typeof IndexRoute;
-  "/ping": typeof PingRoute;
-  "/api/generate": typeof ApiGenerateRoute;
-  "/api/v1/posts": typeof ApiV1PostsRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/ping': typeof PingRoute
+  '/api/generate': typeof ApiGenerateRoute
+  '/api/v1/posts': typeof ApiV1PostsRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/ping" | "/api/generate" | "/api/v1/posts";
-  fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/ping" | "/api/generate" | "/api/v1/posts";
-  id: "__root__" | "/" | "/ping" | "/api/generate" | "/api/v1/posts";
-  fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/ping' | '/api/generate' | '/api/v1/posts'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/ping' | '/api/generate' | '/api/v1/posts'
+  id: '__root__' | '/' | '/ping' | '/api/generate' | '/api/v1/posts'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  PingRoute: typeof PingRoute;
-  ApiGenerateRoute: typeof ApiGenerateRoute;
-  ApiV1PostsRoute: typeof ApiV1PostsRoute;
+  IndexRoute: typeof IndexRoute
+  PingRoute: typeof PingRoute
+  ApiGenerateRoute: typeof ApiGenerateRoute
+  ApiV1PostsRoute: typeof ApiV1PostsRoute
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/ping": {
-      id: "/ping";
-      path: "/ping";
-      fullPath: "/ping";
-      preLoaderRoute: typeof PingRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/generate": {
-      id: "/api/generate";
-      path: "/api/generate";
-      fullPath: "/api/generate";
-      preLoaderRoute: typeof ApiGenerateRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/v1/posts": {
-      id: "/api/v1/posts";
-      path: "/api/v1/posts";
-      fullPath: "/api/v1/posts";
-      preLoaderRoute: typeof ApiV1PostsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+    '/ping': {
+      id: '/ping'
+      path: '/ping'
+      fullPath: '/ping'
+      preLoaderRoute: typeof PingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/generate': {
+      id: '/api/generate'
+      path: '/api/generate'
+      fullPath: '/api/generate'
+      preLoaderRoute: typeof ApiGenerateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/posts': {
+      id: '/api/v1/posts'
+      path: '/api/v1/posts'
+      fullPath: '/api/v1/posts'
+      preLoaderRoute: typeof ApiV1PostsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,17 +107,16 @@ const rootRouteChildren: RootRouteChildren = {
   PingRoute: PingRoute,
   ApiGenerateRoute: ApiGenerateRoute,
   ApiV1PostsRoute: ApiV1PostsRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
 
-import type { createStart } from "@tanstack/react-start";
-
-import type { getRouter } from "./router.tsx";
-declare module "@tanstack/react-start" {
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
   interface Register {
-    ssr: true;
-    router: Awaited<ReturnType<typeof getRouter>>;
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
   }
 }
