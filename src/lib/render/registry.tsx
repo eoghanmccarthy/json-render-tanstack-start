@@ -1,95 +1,27 @@
+import { findFormValue } from "@json-render/core";
+import { defineRegistry } from "@json-render/react";
+import { shadcnComponents } from "@json-render/shadcn";
+
 import { catalog } from "./catalog";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { findFormValue, getByPath } from "@json-render/core";
-import { defineRegistry, useStateStore } from "@json-render/react";
 
 export const { registry, handlers, executeAction } = defineRegistry(catalog, {
   components: {
-    Stack: ({ props, children }) => {
-      const gapClass =
-          { sm: "gap-2", md: "gap-4", lg: "gap-6" }[props.gap ?? "md"] ??
-          "gap-4";
-      return (
-          <div
-              className={`flex ${props.direction === "horizontal" ? "flex-row" : "flex-col"} ${gapClass}`}
-          >
-            {children}
-          </div>
-      );
-    },
-    Card: ({ props, children }) => (
-      <Card>
-        {(props.title || props.description) && (
-          <CardHeader>
-            {props.title ? <CardTitle>{props.title}</CardTitle> : null}
-            {props.description ? <CardDescription>{props.description}</CardDescription> : null}
-          </CardHeader>
-        )}
-        <CardContent>{children}</CardContent>
-        <CardFooter />
-      </Card>
-    ),
-    Text: ({ props }) => (
-      <p className={props.muted ? "text-muted-foreground" : ""}>{props.content}</p>
-    ),
-    Button: ({ props, emit, loading }) => (
-      <Button
-        variant={props.variant ?? "default"}
-        disabled={loading || (props.disabled ?? false)}
-        onClick={() => {
-          console.log("Button clicked:", props.action, props.actionParams, props.label, emit);
-          return emit?.("press");
-        }}
-      >
-        {loading ? "..." : props.label}
-      </Button>
-    ),
-    Input: ({ props }) => {
-      const { state, set } = useStateStore();
-      const value = (getByPath(state, props.valuePath) as string) ?? "";
-      console.log("Rendering Input:", "props.valuePath", props.valuePath, "with value:", value);
-      return (
-        <div className="flex flex-col gap-2">
-          {props.label ? <Label>{props.label}</Label> : null}
-          <Input
-            type={props.type ?? "text"}
-            value={value}
-            placeholder={props.placeholder ?? ""}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              set(props.valuePath, e.target.value)
-            }
-          />
-        </div>
-      );
-    },
-    Textarea: ({ props }) => {
-      const { state, set } = useStateStore();
-      const value = (getByPath(state, props.valuePath) as string) ?? "";
-      return (
-        <div className="flex flex-col gap-2">
-          {props.label ? <Label>{props.label}</Label> : null}
-          <Textarea
-            value={value}
-            placeholder={props.placeholder ?? ""}
-            rows={props.rows ?? 4}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-              set(props.valuePath, e.target.value)
-            }
-          />
-        </div>
-      );
-    },
+    Button: shadcnComponents.Button,
+    Card: shadcnComponents.Card,
+    Grid: shadcnComponents.Grid,
+    Heading: shadcnComponents.Heading,
+    Input: shadcnComponents.Input,
+    Text:shadcnComponents.Text,
+    Textarea: shadcnComponents.Textarea,
+    Toggle: shadcnComponents.Toggle,
+    Select: shadcnComponents.Select,
+    Separator: shadcnComponents.Separator,
+    Slider: shadcnComponents.Slider,
+    Spinner: shadcnComponents.Spinner,
+    Skeleton: shadcnComponents.Skeleton,
+    Stack: shadcnComponents.Stack,
+    Switch: shadcnComponents.Switch,
+
   },
   actions: {
     "posts.list": async (params, setData) => {
@@ -113,8 +45,10 @@ export const { registry, handlers, executeAction } = defineRegistry(catalog, {
 
     "posts.create": async (params, setState, state) => {
       console.log("posts.create action called with params", params, "and data", state);
-      const content = (findFormValue("content", params, state) as string) ?? "";
-      const password = (findFormValue("password", params, state) as string) ?? "";
+      // const content = findFormValue("content", params, state) as string;
+      // const password = findFormValue("password", params, state) as string;
+
+      const { content, password } = params as Record<string, string>;
 
       if (!content || !password) {
         console.warn("Missing required fields for posts.create");

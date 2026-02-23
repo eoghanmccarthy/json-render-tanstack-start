@@ -1,5 +1,6 @@
-import { baseHeaders, forward } from "@/routes/api/-utils";
 import { createFileRoute } from "@tanstack/react-router";
+
+import { baseHeaders, forward } from "@/routes/api/-utils";
 
 export const Route = createFileRoute("/api/v1/posts")({
   server: {
@@ -9,6 +10,7 @@ export const Route = createFileRoute("/api/v1/posts")({
         if (!upstream) {
           return Response.json({ error: "BLOG_API_BASE not set" }, { status: 500 });
         }
+
         const url = new URL(request.url);
         const qs = url.search;
         const res = await fetch(`${upstream}/posts${qs}`, {
@@ -21,11 +23,18 @@ export const Route = createFileRoute("/api/v1/posts")({
         if (!upstream) {
           return Response.json({ error: "BLOG_API_BASE not set" }, { status: 500 });
         }
-        const body = await request.text();
+
+        const { content } = await request.json();
+        console.log("Received content for new post:", content);
+
+        // Build FormData
+        const formData = new FormData();
+        formData.append("content", content);
+
         const res = await fetch(`${upstream}/posts/create`, {
           method: "POST",
-          headers: { "Content-Type": "application/json", ...baseHeaders("POST") },
-          body,
+          headers: { ...baseHeaders("POST") },
+          body: formData,
         });
         return forward(res);
       },
